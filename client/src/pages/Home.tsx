@@ -1,53 +1,100 @@
-import { useState, useRef, ChangeEvent } from 'react'
+import { useRef, ChangeEvent, useEffect } from 'react'
 import { Link } from 'react-router-dom';
 import { useTimer } from '../context/TimerContext'
+import { useSettings } from '../context/SettingsContext';
 import CardLayout from '../components/layouts/CardLayout';
 
 
 const Home = () => {
-  // state
-  const [minNumber, setMinNumber] = useState<number>(0)
-  const [maxNumber, setMaxNumber] = useState<number>(12)
   // context
-  const { seconds, setSeconds } = useTimer();
+  const { seconds, setSeconds, resetTimer } = useTimer();
+  const { selectedNumbers, toggleNumberSelection, numberOfQuestions,setNumberOfQuestions } = useSettings();
   // refs
   const minutesRef = useRef<HTMLInputElement | null>(null);
-  const minimumRef = useRef<HTMLInputElement | null>(null);
-  const maximumRef = useRef<HTMLInputElement | null>(null);
+  const numOfQuestions = useRef<HTMLInputElement | null>(null);
 
-  // const handleStart = () => {
-  //   startTimer();
-  // }
+  useEffect(() => {
+    resetTimer()
+  }, [])
 
   const handleMinutesChange = (e: ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-    console.log(value);
-    setSeconds(parseInt(value) * 60);
+    console.log(typeof value, value)
+    if (value === "") {
+      setSeconds(60)
+    } else if (/^[0-9]*$/.test(value)) {
+      setSeconds(parseInt(value) * 60);
+    }
   }
 
-  const handleMinimumChange = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleQuestionsChange = (e: ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-    setMinNumber(parseInt(value));
+
+    if (value === "") {
+      setNumberOfQuestions(1)
+    } else if (parseInt(value) > 100) {
+      setNumberOfQuestions(100);
+    } else if (/^[0-9]*$/.test(value)) {
+      setNumberOfQuestions(parseInt(value));
+    }
   }
 
-  const handleMaximumChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setMaxNumber(parseInt(value));
-  }
+  const handleCheckboxChange = (number: number) => {
+    toggleNumberSelection(number);
+  };
 
   return (
-    <div className='w-screen h-screen page-background flex justify-center items-center p-8'>
+    <div className='w-screen h-screen page-background flex justify-center items-center p-8 font-poppins text-2xl'>
       <CardLayout>
-        <div className='flex flex-col gap-8 justify-evenly items-center h-full font-poppins'>
+        <div className='flex flex-col gap-8 justify-evenly items-center h-full'>
+
           <h1 className='text-6xl font-fun'>Elijah's Math App</h1>
-          <div className='flex gap-4 text-xl'>
-            <label htmlFor='minuteSelector'>Minutes: </label>
-            <input className='w-10' ref={minutesRef} type='number' defaultValue={seconds / 60} min={1} max={5} onChange={handleMinutesChange} />
-            <label htmlFor='minSelector'>Min: </label>
-            <input className='w-10' ref={minimumRef} type='number' value={minNumber} min={0} max={12} onChange={handleMinimumChange} />
-            <label htmlFor='maxSelector'>Max: </label>
-            <input className='w-10' ref={maximumRef} type='number' value={maxNumber} min={0} max={12} onChange={handleMaximumChange} />
+          
+          <div className='flex justify-evenly w-full'>
+            <div className='flex flex-col items-center gap-4'>
+              <label htmlFor='minuteSelector'>Minutes: </label>
+              <input 
+                className='w-10' 
+                ref={minutesRef} 
+                type='number' 
+                defaultValue={seconds / 60} 
+                min={1} 
+                max={5} 
+                onChange={handleMinutesChange} 
+              />
+              <label>QuestionCount</label>
+              <input 
+                className='w-16' 
+                ref={numOfQuestions}
+                type='number'
+                min={1}
+                max={100}
+                value={numberOfQuestions} 
+                onChange={handleQuestionsChange} 
+              />
+            </div>
+            
+            <div className=''>
+              <h2>Number Selection</h2>
+              <form className='grid grid-cols-4 gap-4'>
+
+                {[...Array(12).keys()].map((number) => (
+                  <label className="flex flex-col items-center justify-end" key={number + 1}>
+                    {number + 1}
+                    <input
+                      className='h-6 w-6 appearance-none border-2 border-candyPurple checked:bg-candyPurple rounded text-white'
+                      type="checkbox"
+                      value={number + 1}
+                      checked={selectedNumbers.includes(number + 1)}
+                      onChange={() => handleCheckboxChange(number + 1)}
+                    />
+                  </label>
+                ))}
+                
+              </form>
+            </div>
           </div>
+
           <div className='flex justify-center items-center h-[100px]'>
             <Link 
               className='py-6 px-12 text-4xl bg-candyGreen text-white rounded-lg font-fun drop-shadow-md border-b-4 border-l-2 border-candyRed hover:border-none' 

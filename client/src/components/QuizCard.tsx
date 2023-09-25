@@ -6,17 +6,16 @@ import {
   KeyboardEvent,
   useEffect, 
 } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Navigate, useNavigate } from 'react-router-dom'
 import { UserContext } from '../context/UserContext'
 // import Timer from './Timer'
 import TimerDisplay from './Timer'
 import { useTimer } from '../context/TimerContext'
+import { useSettings } from '../context/SettingsContext'
 
 
-const QuizCard = ({totalCards}) => {
+const QuizCard = () => {
   // state
-  const [minNumber, setMinNumber] = useState<number>(0)
-  const [maxNumber, setMaxNumber] = useState<number>(12)
   const [number1, setNumber1] = useState<number>(0)
   const [number2, setNumber2] = useState<number>(0)
   const [inputValue, setInputValue] = useState<string>('');
@@ -24,6 +23,7 @@ const QuizCard = ({totalCards}) => {
   //context
   const {userAnswers, setUserAnswers} = useContext(UserContext)
   const {startTimer, setIsComplete, isComplete } = useTimer();
+  const { selectedNumbers, numberOfQuestions } = useSettings();
   // references
   const inputRef = useRef<HTMLInputElement | null>(null);
 
@@ -36,20 +36,23 @@ const QuizCard = ({totalCards}) => {
     if (inputRef.current) {
       inputRef.current.focus();
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
-    if(userAnswers.length >= totalCards || isComplete) {
+    if(userAnswers.length >= numberOfQuestions || isComplete) {
       setIsComplete(true)
-      console.log('complete')
       navigate("/results");
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userAnswers, isComplete])
 
   // calculate new equation
   const createNumbers = () => {
-    setNumber1(Math.floor(Math.random() * (maxNumber - minNumber) + minNumber))
-    setNumber2(Math.floor(Math.random() * (maxNumber - minNumber) + minNumber))
+    const random = (Math.floor(Math.random() * selectedNumbers.length));
+
+    setNumber1(selectedNumbers[random])
+    setNumber2(Math.floor(Math.random() * 12 + 1)) // select random number from 1 to 12
   }
 
   // evaluate answer
@@ -83,11 +86,16 @@ const QuizCard = ({totalCards}) => {
         createNumbers();
         setInputValue('');
       }, 250);
-      }
     }
+  }
 
   return (
     <>
+      {
+        selectedNumbers.length === 0 && (
+          <Navigate to="/" />
+        )
+      }
       <div className='flex justify-between font-poppins'>
         <h3 className='font-fun'>Multiplication</h3>
         <TimerDisplay />

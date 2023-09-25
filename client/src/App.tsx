@@ -4,6 +4,7 @@ import { Routes, Route } from "react-router-dom";
 import Quiz from "./pages/Quiz"
 import Home from "./pages/Home";
 import Results from "./pages/Results";
+import { SettingsProvider } from "./context/SettingsContext";
 
 export interface UserAnswer {
   num1: number;
@@ -16,13 +17,15 @@ function App() {
   
   return (
     <UserContextProvider>
-      <TimerProvider initialSeconds={2}>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/quiz" element={<Quiz />} />
-          <Route path="/results" element={<Results />} />
-        </Routes>
-      </TimerProvider>
+      <SettingsProvider>
+        <TimerProvider initialSeconds={2}>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/quiz" element={<Quiz />} />
+            <Route path="/results" element={<Results />} />
+          </Routes>
+        </TimerProvider>
+      </SettingsProvider>
     </UserContextProvider>
 )
 }
