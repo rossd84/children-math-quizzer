@@ -1,6 +1,9 @@
 import UserContextProvider from "./context/UserContext";
 import { TimerProvider } from "./context/TimerContext";
+import { Routes, Route } from "react-router-dom";
 import Quiz from "./pages/Quiz"
+import Home from "./pages/Home";
+import Results from "./pages/Results";
 
 export interface UserAnswer {
   num1: number;
@@ -14,9 +17,11 @@ function App() {
   return (
     <UserContextProvider>
       <TimerProvider initialSeconds={2}>
-        <div>
-          <Quiz />
-        </div>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/quiz" element={<Quiz />} />
+          <Route path="/results" element={<Results />} />
+        </Routes>
       </TimerProvider>
     </UserContextProvider>
 )

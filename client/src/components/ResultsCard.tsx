@@ -1,8 +1,9 @@
 
 import { useUser } from '../context/UserContext'
 import { useTimer } from '../context/TimerContext'
+import { Link } from 'react-router-dom'
 
-const CompleteCard = ({totalCards}) => {
+const ResultsCard = ({totalCards}) => {
   const {userAnswers, setUserAnswers} = useUser()
   const {resetTimer}= useTimer();
   const totalQuestions = userAnswers.length;
@@ -20,8 +21,7 @@ const CompleteCard = ({totalCards}) => {
       <div className='flex flex-col justify-center items-center pb-4 gap-4 border-b-4 border-candyYellow'>
         <p>Total attempted: {totalQuestions} / {totalCards}</p>
         <p>Grade: {grade}</p>
-        <button className='bg-candyPurple text-white rounded-lg py-4 px-20 text-2xl font-fun'type='button' onClick={handleReset} >Reset</button>
-
+        <Link className='bg-candyPurple text-white rounded-lg py-4 px-20 text-2xl font-fun' onClick={handleReset} to="/">Reset</Link>
       </div>
       <p>Missed questions: </p>
       <ul className='flex gap-8'>
@@ -33,4 +33,4 @@ const CompleteCard = ({totalCards}) => {
   )
 }
 
-export default CompleteCard
+export default ResultsCard

@@ -6,6 +6,7 @@ import {
   KeyboardEvent,
   useEffect, 
 } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { UserContext } from '../context/UserContext'
 // import Timer from './Timer'
 import TimerDisplay from './Timer'
@@ -22,18 +23,28 @@ const QuizCard = ({totalCards}) => {
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
   //context
   const {userAnswers, setUserAnswers} = useContext(UserContext)
-  const {startTimer, isStarted, setSeconds, seconds, setIsComplete } = useTimer();
+  const {startTimer, setIsComplete, isComplete } = useTimer();
   // references
   const inputRef = useRef<HTMLInputElement | null>(null);
-  const minutesRef = useRef<HTMLInputElement | null>(null);
-  const minimumRef = useRef<HTMLInputElement | null>(null);
-  const maximumRef = useRef<HTMLInputElement | null>(null);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
-    if(userAnswers.length >= totalCards) {
-      setIsComplete(true)
+    createNumbers();
+    startTimer();
+
+    if (inputRef.current) {
+      inputRef.current.focus();
     }
-  }, [userAnswers])
+  }, []);
+
+  useEffect(() => {
+    if(userAnswers.length >= totalCards || isComplete) {
+      setIsComplete(true)
+      console.log('complete')
+      navigate("/results");
+    }
+  }, [userAnswers, isComplete])
 
   // calculate new equation
   const createNumbers = () => {
@@ -54,38 +65,12 @@ const QuizCard = ({totalCards}) => {
     return checkIsCorrect;
   }
 
-  const handleStart = () => {
-    createNumbers();
-    startTimer();
-
-    if (inputRef.current) {
-      inputRef.current.focus();
-    }
-  }
-
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     const input = e.target.value;
 
     if (/^[0-9]*$/.test(input)) {
       setInputValue(input);
     }
-  }
-
-  const handleMinutesChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    console.log(value);
-    setSeconds(parseInt(value) * 60);
-  }
-
-  const handleMinimumChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setMinNumber(parseInt(value));
-    // setSeconds(minutes * 60);
-  }
-
-  const handleMaximumChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setMaxNumber(parseInt(value));
   }
 
   const handleKeyPress = (e: KeyboardEvent<HTMLInputElement>) => {
@@ -103,50 +88,30 @@ const QuizCard = ({totalCards}) => {
 
   return (
     <>
-      {
-        !isStarted
-        ? <div className='flex flex-col gap-8 justify-evenly items-center h-full font-poppins'>
-            <h1 className='text-6xl font-fun'>Elijah's Math App</h1>
-            <div className='flex gap-4 text-xl'>
-              <label htmlFor='minuteSelector'>Minutes: </label>
-              <input className='w-10' ref={minutesRef} type='number' defaultValue={seconds / 60} min={1} max={5} onChange={handleMinutesChange} />
-              <label htmlFor='minSelector'>Min: </label>
-              <input className='w-10' ref={minimumRef} type='number' value={minNumber} min={0} max={12} onChange={handleMinimumChange} />
-              <label htmlFor='maxSelector'>Max: </label>
-              <input className='w-10' ref={maximumRef} type='number' value={maxNumber} min={0} max={12} onChange={handleMaximumChange} />
-            </div>
-            <div className='flex justify-center items-center h-[100px]'>
-              <button className='py-6 px-12 text-4xl bg-candyGreen text-white rounded-lg font-fun drop-shadow-md border-b-4 border-l-2 border-candyRed hover:border-none' type='button' onClick={handleStart}>START</button>
-            </div>
-          </div>
-        
-        : <>
-          <div className='flex justify-between font-poppins'>
-            <h3 className='font-fun'>Multiplication</h3>
-            <TimerDisplay />
-          </div>
-          <div className='w-full h-full flex justify-center items-center'>
-            <div className='text-6xl flex flex-col w-28 text-right gap-2'>
-              <p>{number1}</p>
-              <p className='border-b-4 border-black pb-2'><span>x</span>{number2}</p>
-              <input 
-                className={
-                  isCorrect
-                  ? "text-right focus:outline-none caret-transparent text-candyGreen"
-                  : isCorrect === null
-                  ? "text-right focus:outline-none caret-transparent"
-                  : "text-right focus:outline-none caret-transparent text-candyRed"
-                } 
-                type="text" 
-                value={inputValue}
-                onChange={handleInputChange}
-                onKeyDown={handleKeyPress}
-                ref={inputRef}
-              />
-            </div>
-          </div>
-          </>
-      }
+      <div className='flex justify-between font-poppins'>
+        <h3 className='font-fun'>Multiplication</h3>
+        <TimerDisplay />
+      </div>
+      <div className='w-full h-full flex justify-center items-center'>
+        <div className='text-6xl flex flex-col w-28 text-right gap-2'>
+          <p>{number1}</p>
+          <p className='border-b-4 border-black pb-2'><span>x</span>{number2}</p>
+          <input 
+            className={
+              isCorrect
+              ? "text-right focus:outline-none caret-transparent text-candyGreen"
+              : isCorrect === null
+              ? "text-right focus:outline-none caret-transparent"
+              : "text-right focus:outline-none caret-transparent text-candyRed"
+            } 
+            type="text" 
+            value={inputValue}
+            onChange={handleInputChange}
+            onKeyDown={handleKeyPress}
+            ref={inputRef}
+          />
+        </div>
+      </div>
     </>
   )
 }

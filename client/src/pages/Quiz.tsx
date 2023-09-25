@@ -2,24 +2,16 @@ import React from 'react'
 import CardLayout from '../components/layouts/CardLayout'
 import QuizCard from '../components/QuizCard'
 import {TimerProvider, useTimer} from '../context/TimerContext'
-import CompleteCard from '../components/CompleteCard'
+import ResultsCard from '../components/ResultsCard'
 
 
 const Quiz = () => {
   const {isComplete} = useTimer();
-  const totalQuestions: number = 25;
+  const totalQuestions: number = 1;
   return (
       <div className='w-screen h-screen page-background flex justify-center items-center p-8'>
         <CardLayout>
-          {
-            isComplete
-            ? <CompleteCard
-              totalCards={totalQuestions}
-            />
-            : <QuizCard
-                totalCards={totalQuestions}
-            />
-          }
+          <QuizCard totalCards={totalQuestions} />
         </CardLayout>
       </div>
   )
