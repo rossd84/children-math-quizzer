@@ -20,17 +20,24 @@ const ResultsCard = () => {
 
   return (
     <div className='flex flex-col text-xl gap-4 justify-center text-center'>
-      <div className='flex flex-col justify-center items-center pb-4 gap-4 border-b-4 border-candyYellow'>
+      <div className='flex flex-col justify-center items-center pb-4 gap-2 border-b-4 border-candyYellow'>
         <p>Total attempted: {totalQuestions} / {numberOfQuestions}</p>
-        <p>Grade: {grade}</p>
+        <p>Wrong attempted answers: {missedQuestions.length}</p>
+        <p>Grade: {correctQuestions}/{numberOfQuestions} ({grade})</p>
         <Link className='bg-candyPurple text-white rounded-lg py-4 px-20 text-2xl font-fun' onClick={handleReset} to="/">Reset</Link>
       </div>
-      <p>Missed questions: </p>
-      <ul className='flex gap-8'>
-        {missedQuestions.map((q, idx) => (
-          <li key={idx}>{q.num1}x{q.num2}</li>
-        ))}
-      </ul>
+      <div className='flex flex-col text-2xl'>
+        <h3>Attempted Answers </h3>
+        <div className='flex justify-center mt-4'>
+          <ul className='grid grid-cols-5 gap-4'>
+            {userAnswerList.map((answer, idx) => (
+              <li className={answer.isCorrect ? 'flex' : 'flex text-candyRed'} key={idx}>
+                {answer.num1}x{answer.num2} = {answer.answer}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
     </div>
   )
 }

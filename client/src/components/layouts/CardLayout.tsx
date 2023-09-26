@@ -5,7 +5,7 @@ interface LayoutProps {
 }
 const CardLayout: React.FC<LayoutProps>  = ({children}) => {
   return (
-    <div className='w-full md:w-[50%] h-full min-h-[600px] md:h-[70%] bg-white rounded-xl p-12 drop-shadow-lg border-[16px] border-candyYellow'>
+    <div className='w-full md:w-[50%] min-h-[70%] bg-white rounded-xl p-12 drop-shadow-lg border-[16px] border-candyYellow'>
       {children}
     </div>
   )
