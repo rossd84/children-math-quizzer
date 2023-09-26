@@ -5,16 +5,16 @@ import { Link } from 'react-router-dom'
 import { useSettings } from '../context/SettingsContext'
 
 const ResultsCard = () => {
-  const {userAnswers, setUserAnswers} = useUser()
+  const {userAnswerList, clearUserAnswerList} = useUser()
   const {resetTimer}= useTimer();
   const {numberOfQuestions} = useSettings();
-  const totalQuestions = userAnswers.length;
-  const correctQuestions = userAnswers.filter(x => x.isCorrect).length;
-  const missedQuestions = userAnswers.filter(x => !x.isCorrect);
+  const totalQuestions = userAnswerList.length;
+  const correctQuestions = userAnswerList.filter(x => x.isCorrect).length;
+  const missedQuestions = userAnswerList.filter(x => !x.isCorrect);
   const grade = totalQuestions > 0 ? `${(correctQuestions / numberOfQuestions * 100).toFixed(0)}%` : 'No questions answered'
 
   const handleReset = () => {
-    setUserAnswers([]);
+    clearUserAnswerList();
     resetTimer();
   }
 

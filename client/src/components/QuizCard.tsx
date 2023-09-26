@@ -1,13 +1,12 @@
 import { 
   useState,
   useRef,
-  useContext,
   ChangeEvent, 
   KeyboardEvent,
   useEffect, 
 } from 'react'
 import { Navigate, useNavigate } from 'react-router-dom'
-import { UserContext } from '../context/UserContext'
+import { useUser } from '../context/UserContext'
 // import Timer from './Timer'
 import TimerDisplay from './Timer'
 import { useTimer } from '../context/TimerContext'
@@ -21,7 +20,7 @@ const QuizCard = () => {
   const [inputValue, setInputValue] = useState<string>('');
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
   //context
-  const {userAnswers, setUserAnswers} = useContext(UserContext)
+  const { addAnswer, userAnswerList } = useUser();
   const {startTimer, setIsComplete, isComplete } = useTimer();
   const { selectedNumbers, numberOfQuestions } = useSettings();
   // references
@@ -40,12 +39,12 @@ const QuizCard = () => {
   }, []);
 
   useEffect(() => {
-    if(userAnswers.length >= numberOfQuestions || isComplete) {
+    if(userAnswerList.length >= numberOfQuestions || isComplete) {
       setIsComplete(true)
       navigate("/results");
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userAnswers, isComplete])
+  }, [userAnswerList, isComplete])
 
   // calculate new equation
   const createNumbers = () => {
@@ -60,11 +59,13 @@ const QuizCard = () => {
     const checkIsCorrect = parseInt(inputValue) === number1 * number2
     setIsCorrect(checkIsCorrect);
 
-    setUserAnswers([...userAnswers, {
+    addAnswer({
       num1: number1,
       num2: number2,
-      isCorrect: checkIsCorrect
-    }])
+      answer: parseInt(inputValue),
+      isCorrect: checkIsCorrect,
+      time: 0
+    })
     return checkIsCorrect;
   }
 

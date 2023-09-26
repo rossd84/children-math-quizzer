@@ -1,4 +1,4 @@
-import UserContextProvider from "./context/UserContext";
+import { UserProvider } from "./context/UserContext";
 import { TimerProvider } from "./context/TimerContext";
 import { Routes, Route } from "react-router-dom";
 import Quiz from "./pages/Quiz"
@@ -16,7 +16,7 @@ function App() {
 
   
   return (
-    <UserContextProvider>
+    <UserProvider>
       <SettingsProvider>
         <TimerProvider initialSeconds={2}>
           <Routes>
@@ -26,7 +26,7 @@ function App() {
           </Routes>
         </TimerProvider>
       </SettingsProvider>
-    </UserContextProvider>
+    </UserProvider>
 )
 }
 

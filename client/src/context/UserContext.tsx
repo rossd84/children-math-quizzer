@@ -1,36 +1,55 @@
-import { createContext, useState, useContext, ReactNode } from 'react';
-import { UserAnswer } from '../App';
+// UserContext.tsx
+import { createContext, useContext, useState, ReactNode } from 'react';
 
-interface ChildrenProps {
+type UserAnswer = {
+  num1: number;
+  num2: number;
+  answer: number;
+  isCorrect: boolean;
+  time: number;
+};
+
+type UserContextType = {
+  userAnswerList: UserAnswer[];
+  addAnswer: (userData: UserAnswer) => void;
+  clearUserAnswerList: () => void;
+};
+
+const UserContext = createContext<UserContextType | undefined>(undefined);
+
+// eslint-disable-next-line react-refresh/only-export-components
+export function useUser(): UserContextType {
+  const context = useContext(UserContext);
+  if (!context) {
+    throw new Error('useUser must be used within a UserProvider');
+  }
+  return context;
+}
+
+type UserProviderProps = {
   children: ReactNode;
-}
+};
 
-interface UserContextType {
-  userAnswers: UserAnswer[];
-  setUserAnswers: React.Dispatch<React.SetStateAction<never[]>>;
-}
+export function UserProvider({ children }: UserProviderProps) {
+  const [userAnswerList, setUserAnswerList] = useState<UserAnswer[]>([]);
 
-export const UserContext = createContext<UserContextType | undefined>(undefined);
+  const addAnswer = (userData: UserAnswer) => {
+    setUserAnswerList([...userAnswerList, userData]);
+  };
 
-export default function UserContextProvider({children}: ChildrenProps) {
-  const [userAnswers, setUserAnswers] = useState([]);
+  const clearUserAnswerList = () => {
+    setUserAnswerList([])
+  }
+
+  const contextValue: UserContextType = {
+    userAnswerList,
+    addAnswer,
+    clearUserAnswerList
+  };
 
   return (
-    <UserContext.Provider
-      value={{
-        userAnswers,
-        setUserAnswers
-      }}
-    >
+    <UserContext.Provider value={contextValue}>
       {children}
     </UserContext.Provider>
   );
 }
-
-export const useUser = (): UserContextType => {
-  const context = useContext(UserContext);
-  if (context === undefined) {
-    throw new Error('useTimer must be used within a TimerProvider');
-  }
-  return context;
-};
