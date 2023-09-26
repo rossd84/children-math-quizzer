@@ -1,8 +1,8 @@
 import React from 'react';
-import { useTimer } from '../context/TimerContext';
+import { useCountdown} from '../context/CountdownContext';
 
-const TimerDisplay: React.FC = () => {
-  const { seconds } = useTimer();
+const CountdownDisplay: React.FC = () => {
+  const { seconds } = useCountdown();
 
   // Calculate minutes and seconds
   const minutes = Math.floor(seconds / 60);
@@ -16,4 +16,4 @@ const TimerDisplay: React.FC = () => {
   );
 };
 
-export default TimerDisplay;
+export default CountdownDisplay;

@@ -7,9 +7,8 @@ import {
 } from 'react'
 import { Navigate, useNavigate } from 'react-router-dom'
 import { useUser } from '../context/UserContext'
-// import Timer from './Timer'
-import TimerDisplay from './Timer'
-import { useTimer } from '../context/TimerContext'
+import CountdownDisplay from './CountdownDisplay'
+import { useCountdown } from '../context/CountdownContext'
 import { useSettings } from '../context/SettingsContext'
 
 
@@ -21,7 +20,7 @@ const QuizCard = () => {
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
   //context
   const { addAnswer, userAnswerList } = useUser();
-  const {startTimer, setIsComplete, isComplete } = useTimer();
+  const {startCountdown, setIsComplete, isComplete } = useCountdown();
   const { selectedNumbers, numberOfQuestions } = useSettings();
   // references
   const inputRef = useRef<HTMLInputElement | null>(null);
@@ -30,7 +29,7 @@ const QuizCard = () => {
 
   useEffect(() => {
     createNumbers();
-    startTimer();
+    startCountdown();
 
     if (inputRef.current) {
       inputRef.current.focus();
@@ -99,7 +98,7 @@ const QuizCard = () => {
       }
       <div className='flex justify-between font-poppins'>
         <h3 className='font-fun'>Multiplication</h3>
-        <TimerDisplay />
+        <CountdownDisplay />
       </div>
       <div className='w-full h-full flex justify-center items-center'>
         <div className='text-6xl flex flex-col w-28 text-right gap-2'>

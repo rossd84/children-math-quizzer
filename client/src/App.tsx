@@ -1,5 +1,5 @@
 import { UserProvider } from "./context/UserContext";
-import { TimerProvider } from "./context/TimerContext";
+import { CountdownProvider } from "./context/CountdownContext";
 import { Routes, Route } from "react-router-dom";
 import Quiz from "./pages/Quiz"
 import Home from "./pages/Home";
@@ -18,13 +18,13 @@ function App() {
   return (
     <UserProvider>
       <SettingsProvider>
-        <TimerProvider initialSeconds={2}>
+        <CountdownProvider>
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/quiz" element={<Quiz />} />
             <Route path="/results" element={<Results />} />
           </Routes>
-        </TimerProvider>
+        </CountdownProvider>
       </SettingsProvider>
     </UserProvider>
 )

@@ -1,12 +1,12 @@
 
 import { useUser } from '../context/UserContext'
-import { useTimer } from '../context/TimerContext'
+import { useCountdown } from '../context/CountdownContext'
 import { Link } from 'react-router-dom'
 import { useSettings } from '../context/SettingsContext'
 
 const ResultsCard = () => {
   const {userAnswerList, clearUserAnswerList} = useUser()
-  const {resetTimer}= useTimer();
+  const {resetCountdown}= useCountdown();
   const {numberOfQuestions} = useSettings();
   const totalQuestions = userAnswerList.length;
   const correctQuestions = userAnswerList.filter(x => x.isCorrect).length;
@@ -15,7 +15,7 @@ const ResultsCard = () => {
 
   const handleReset = () => {
     clearUserAnswerList();
-    resetTimer();
+    resetCountdown();
   }
 
   return (
@@ -32,7 +32,7 @@ const ResultsCard = () => {
           <ul className='grid grid-cols-5 gap-4'>
             {userAnswerList.map((answer, idx) => (
               <li className={answer.isCorrect ? 'flex' : 'flex text-candyRed'} key={idx}>
-                {answer.num1}x{answer.num2} = {answer.answer}
+                {answer.num1}x{answer.num2}={answer.answer}
               </li>
             ))}
           </ul>

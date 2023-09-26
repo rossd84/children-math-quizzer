@@ -1,4 +1,3 @@
-import React from 'react'
 import ResultsCard from '../components/ResultsCard'
 import CardLayout from '../components/layouts/CardLayout'
 

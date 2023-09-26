@@ -1,34 +1,34 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
-// Create a context for the timer
-interface TimerContextType {
+// Create a context for the countdown
+interface CountdownContextType {
   seconds: number;
   isRunning: boolean;
   isStarted: boolean;
   isComplete: boolean;
   setIsComplete: (value: boolean) => void;
   setSeconds: (value: number) => void;
-  startTimer: () => void;
-  pauseTimer: () => void;
-  resetTimer: (initialSeconds?: number) => void;
+  startCountdown: () => void;
+  pauseCountdown: () => void;
+  resetCountdown: (initialSeconds?: number) => void;
 }
 
-const TimerContext = createContext<TimerContextType | undefined>(undefined);
+const CountdownContext = createContext<CountdownContextType | undefined>(undefined);
 
-// Create a TimerProvider component
-interface TimerProviderProps {
+// Create a CountdownProvider component
+interface CountdownProviderProps {
   children: ReactNode;
   initialSeconds?: number; // Allow initial seconds as a prop
 }
 
-export const TimerProvider: React.FC<TimerProviderProps> = ({ children }) => {
+export const CountdownProvider: React.FC<CountdownProviderProps> = ({ children }) => {
   const [seconds, setSeconds] = useState<number>(120);
   const [isRunning, setIsRunning] = useState<boolean>(false);
   const [isComplete, setIsComplete] = useState<boolean>(false);
   const [isStarted, setIsStarted] = useState<boolean>(false);
 
   useEffect(() => {
-    let interval: NodeJS.Timeout;
+    let interval: number | undefined;
 
     if (isRunning) {
       interval = setInterval(() => {
@@ -47,16 +47,16 @@ export const TimerProvider: React.FC<TimerProviderProps> = ({ children }) => {
     return () => clearInterval(interval);
   }, [isRunning, seconds]);
 
-  const startTimer = () => {
+  const startCountdown = () => {
     setIsStarted(true);
     setIsRunning(true);
   };
 
-  const pauseTimer = () => {
+  const pauseCountdown = () => {
     setIsRunning(false);
   };
 
-  const resetTimer = () => {
+  const resetCountdown = () => {
     setIsRunning(false);
     setIsStarted(false);
     setIsComplete(false);
@@ -64,17 +64,17 @@ export const TimerProvider: React.FC<TimerProviderProps> = ({ children }) => {
   };
 
   return (
-    <TimerContext.Provider value={{ seconds, setSeconds, isRunning, isStarted, isComplete, setIsComplete, startTimer, pauseTimer, resetTimer }}>
+    <CountdownContext.Provider value={{ seconds, setSeconds, isRunning, isStarted, isComplete, setIsComplete, startCountdown, pauseCountdown, resetCountdown }}>
       {children}
-    </TimerContext.Provider>
+    </CountdownContext.Provider>
   );
 };
 
-// Create a custom hook to access the timer context
-export const useTimer = (): TimerContextType => {
-  const context = useContext(TimerContext);
+// Create a custom hook to access the countdown context
+export const useCountdown = (): CountdownContextType => {
+  const context = useContext(CountdownContext);
   if (context === undefined) {
-    throw new Error('useTimer must be used within a TimerProvider');
+    throw new Error('useCountdown must be used within a CountdownProvider');
   }
   return context;
 };
